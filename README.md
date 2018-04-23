@@ -40,8 +40,8 @@ python -m multiproc ./main.py -a resnet152  --epochs 1 -b 128  --lr 0.01 /imagen
 ```
 
 # horovod benchmark with tensorflow
--[tips](https://github.com/yhgon/horovod-tf-uber/blob/master/docs/Tips.md check the readme file in my horovod site
--[dockerfile](https://github.com/yhgon/horovod-tf-uber/blob/master/Dockerfile.c8d6-tf13) chekc my dockerfile
+- check [tips](https://github.com/yhgon/horovod-tf-uber/blob/master/docs/Tips.md)  in my horovod site 
+- I also provide [dockerfile](https://github.com/yhgon/horovod-tf-uber/blob/master/Dockerfile.c8d6-tf13)  dockerfile
      
 # inference with trt
 - googlenet with fp16(tensorcore)
