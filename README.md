@@ -1,18 +1,17 @@
 # benchmark for multiple framework 
 
 # image
-  imagenet benchmark with pytorch 
-      prepare dataset
-      prepare docker
-      run benchmark code
-  horovod benchmark with tensorflow
-     custom dockerbuild
-     horovod configuration
-     run benchmark code
+ 1  imagenet benchmark with pytorch 
+      1 prepare dataset
+      2 prepare docker
+      3 run benchmark code
+ 2 horovod benchmark with tensorflow
+     1 custom dockerbuild
+     2 horovod configuration
+     3 run benchmark code
      
-
 # inference with trt
-  googlenet with fp16(tensorcore)
+1 googlenet with fp16(tensorcore)
 
 
 
