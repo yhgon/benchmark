@@ -1,7 +1,7 @@
 # benchmark for multiple framework 
 this repository will share how to benchmark some DL training and inferencing. 
 
-# image
+# training imagenet with pytorch
 -  imagenet benchmark with pytorch 
 --  prepare dataset
 downloadd the dataset from Imagenet as below 
@@ -12,7 +12,6 @@ downloadd the dataset from Imagenet as below
 -rw-rw-r--    1 hryu hryu 6.3G  4월 23 11:00 ILSVRC2012_img_val.tar
 
 ```
-
 --  prepare docker
 
 pull official NGC pytorch containers from NGC repositories. 
@@ -40,10 +39,9 @@ cd examples/imagenet/
 python -m multiproc ./main.py -a resnet152  --epochs 1 -b 128  --lr 0.01 /imagenet
 ```
 
--  horovod benchmark with tensorflow
---  custom dockerbuild
---  horovod configuration
---  run benchmark code
+# horovod benchmark with tensorflow
+-[tips](https://github.com/yhgon/horovod-tf-uber/blob/master/docs/Tips.md check the readme file in my horovod site
+-[dockerfile](https://github.com/yhgon/horovod-tf-uber/blob/master/Dockerfile.c8d6-tf13) chekc my dockerfile
      
 # inference with trt
 - googlenet with fp16(tensorcore)
