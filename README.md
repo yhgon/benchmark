@@ -3,8 +3,8 @@ this repository will share how to benchmark some DL training and inferencing.
 
 # training imagenet with pytorch
 -  imagenet benchmark with pytorch 
---  prepare dataset
-downloadd the dataset from Imagenet as below 
+-  prepare dataset
+Download the images from [Imagenet](http://image-net.org/download-images)  Imagenet as below 
 
 ```
 -rw-rw-r--    1 hryu hryu  13G  4월 23 11:18 ILSVRC2012_img_test.tar
@@ -12,6 +12,47 @@ downloadd the dataset from Imagenet as below
 -rw-rw-r--    1 hryu hryu 6.3G  4월 23 11:00 ILSVRC2012_img_val.tar
 
 ```
+after that, untar the files with the [instruction](https://github.com/facebook/fb.resnet.torch/blob/master/INSTALL.md#download-the-imagenet-dataset) 
+
+we need to prepare raw dataset directory structure would be below 
+
+```
+/dataset/imagenet
+                 -train
+                      -n001(catetory)
+                         img01
+                         img02
+                      -n002(catetory)
+                         img01
+                         img02
+                 -val 
+                     -n001(catetory)
+                         img01
+                         img02
+                     -n002(catetory)
+                         img01
+                         img02
+                 -test
+                     img01
+                     img02
+```
+
+```
+mkdir train && mv ILSVRC2012_img_train.tar train/ && cd train
+tar -xvf ILSVRC2012_img_train.tar && rm -f ILSVRC2012_img_train.tar
+find . -name "*.tar" | while read NAME ; do mkdir -p "${NAME%.tar}"; tar -xvf "${NAME}" -C "${NAME%.tar}"; rm -f "${NAME}"; done
+cd ..
+```
+
+Extract the validation dataset. moreover, all validation dataset images located ins single folders so we need to move each same categori images to same subfolders with [val prepare script](https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh) 
+```
+mkdir val && mv ILSVRC2012_img_val.tar val/ && cd val && tar -xvf ILSVRC2012_img_val.tar
+wget -qO- https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh | bash
+```
+
+
+
+
 --  prepare docker
 
 pull official NGC pytorch containers from NGC repositories. 
