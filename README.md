@@ -14,7 +14,36 @@ Download the images from [Imagenet](http://image-net.org/download-images)  Image
 ```
 after that, untar the files with the [instruction](https://github.com/facebook/fb.resnet.torch/blob/master/INSTALL.md#download-the-imagenet-dataset) 
 
-we need to prepare raw dataset directory structure would be below 
+we need to prepare raw dataset 
+
+
+```
+mkdir train && mv ILSVRC2012_img_train.tar train/ && cd train
+tar -xvf ILSVRC2012_img_train.tar && rm -f ILSVRC2012_img_train.tar
+find . -name "*.tar" | while read NAME ; do mkdir -p "${NAME%.tar}"; tar -xvf "${NAME}" -C "${NAME%.tar}"; rm -f "${NAME}"; done
+cd ..
+```
+
+After that your raw dataset folder structure would be as below : 
+```
+/dataset/imagenet
+                 -train
+                      -n001(catetory)
+                         img01
+                         img02
+                      -n002(catetory)
+                         img01
+                         img02
+```
+
+
+Extract the validation dataset. moreover, all validation dataset images located ins single folders so we need to move each same categori images to same subfolders with [val prepare script](https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh) 
+```
+mkdir val && mv ILSVRC2012_img_val.tar val/ && cd val && tar -xvf ILSVRC2012_img_val.tar
+wget -qO- https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh | bash
+```
+
+Final data structure would be below :
 
 ```
 /dataset/imagenet
@@ -37,39 +66,24 @@ we need to prepare raw dataset directory structure would be below
                      img02
 ```
 
-```
-mkdir train && mv ILSVRC2012_img_train.tar train/ && cd train
-tar -xvf ILSVRC2012_img_train.tar && rm -f ILSVRC2012_img_train.tar
-find . -name "*.tar" | while read NAME ; do mkdir -p "${NAME%.tar}"; tar -xvf "${NAME}" -C "${NAME%.tar}"; rm -f "${NAME}"; done
-cd ..
-```
-
-Extract the validation dataset. moreover, all validation dataset images located ins single folders so we need to move each same categori images to same subfolders with [val prepare script](https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh) 
-```
-mkdir val && mv ILSVRC2012_img_val.tar val/ && cd val && tar -xvf ILSVRC2012_img_val.tar
-wget -qO- https://raw.githubusercontent.com/soumith/imagenetloader.torch/master/valprep.sh | bash
-```
-
-
-
 
 --  prepare docker
 
 pull official NGC pytorch containers from NGC repositories. 
 ```
 docker login nvcr.io
-docker pull nvcr.io/nvidia/pytorch:18.03-py3
+docker pull nvcr.io/nvidia/pytorch:18.04-py3
 ```
 
 for nvidia-docker 2.0, you could run GPU enabaled docker 
 
 ```
-docker run --runtime=nvidia --shm-size=1g --ulimit memlock=-1 -e NVIDIA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7  --rm  -v /raid/hryu/datasets/imagenet:/imagenet --name=hryu-pt-basic -ti nvcr.io/nvidia/pytorch:18.03-py3
+docker run --runtime=nvidia --shm-size=1g --ulimit memlock=-1 -e NVIDIA_VISIBLE_DEVICES=0,1,2,3,4,5,6,7  --rm  -v /raid/hryu/datasets/imagenet:/imagenet --name=hryu-pt-basic -ti nvcr.io/nvidia/pytorch:18.04-py3
 ```
 
 for nvidia-docker 1.0 use below script 
 ```
-nvidia-docker run --shm-size=1g --ulimit memlock=-1 --rm  -v /raid/hryu/datasets/imagenet:/imagenet --name=hryu-pt-basic -ti nvcr.io/nvidia/pytorch:18.03-py3
+nvidia-docker run --shm-size=1g --ulimit memlock=-1 --rm  -v /raid/hryu/datasets/imagenet:/imagenet --name=hryu-pt-basic -ti nvcr.io/nvidia/pytorch:18.04-py3
 ```
 
 --  run benchmark code
@@ -90,17 +104,17 @@ python -m multiproc ./main.py -a resnet152  --epochs 1 -b 128  --lr 0.01 /imagen
 
 ```
 docker login nvcr.io
-docker pull nvcr.io/nvidia/tensorflow:18.03-py2
+docker pull nvcr.io/nvidia/tensorflow:18.04-py2
 
 ```
 
 for nvidia-docker 2.0 
 ```
-docker run --runtime=nvidia   --rm  -ti --name=hryu-trt nvcr.io/nvidia/tensorrt:18.03-py2
+docker run --runtime=nvidia   --rm  -ti --name=hryu-trt nvcr.io/nvidia/tensorrt:18.04-py2
 ```
 for nvidia-docker 1.0 you could launch docker 
 ```
-nvidia-docker run   --rm  -ti --name=hryu-trt nvcr.io/nvidia/tensorrt:18.03-py2
+nvidia-docker run   --rm  -ti --name=hryu-trt nvcr.io/nvidia/tensorrt:18.04-py2
 ```
 
 check GPU is work well on docker or not with nvidia system management interface tool(nvidia-smi)
