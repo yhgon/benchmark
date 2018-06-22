@@ -28,10 +28,9 @@ cublasGemmEx(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N,
 before compile the source code, modify  matrix size manually `#define SIZE 8192  //  4096 8192 10240 16384 24576 `  in line#40 [half_precision](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed_precision.cu#L40)
 
 
-in line#99  benchmark code use curand API to generate random matrix [L99] (https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed_precision.cu#L99)
+in line#99  benchmark code use curand API to generate random matrix [L99](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed_precision.cu#L99)
 
-in line#121  benchmark code warm up the GPU [L121] 
-https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed_precision.cu#L121
+in line#121  benchmark code warm up the GPU [L121](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed_precision.cu#L121)
 
 moreover, for best performance, use CUDA 9.2 and recent cublas patch. from [nvidia dev site](http://developer.nvidia.com) You also could use docker images from [docker hub](https://hub.docker.com/r/nvidia/cuda/tags/) 
 
