@@ -51,4 +51,4 @@ nvidia-smi -ac 877,1530
 ./half-8k | grep RMax
 ```
 
-this code is my initial draft code. if you find any bug, inform me
+
