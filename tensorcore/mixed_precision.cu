@@ -34,13 +34,11 @@
 #include <curand.h>
 #include <cublas_v2.h>
 
-
 // Must be multiples of 16 to fit TensorCore
 #define SIZE 8192  //  4096 8192 10240 16384 24576
 #define MATRIX_M SIZE 
 #define MATRIX_N SIZE
 #define MATRIX_K SIZE
-
 
 #define num_clock 1530
 #define num_SM 80
@@ -51,7 +49,6 @@
 #define TOTAL_OP  MATRIX_M * MATRIX_N * MATRIX_K * 2
 #define TOTAL_OP2 (MATRIX_M*MATRIX_N) * (2*MATRIX_K+2) 
 __global__ void convertFp32ToFp16 (half *out, float *in, int n);
-
 
 int main(int argc, char* argv[]) {
 
@@ -89,7 +86,6 @@ int main(int argc, char* argv[]) {
    cudaMalloc((void**)&c, MATRIX_M * MATRIX_N * sizeof(float));
    cudaMalloc((void**)&c_cublas, MATRIX_M * MATRIX_N * sizeof(float));
 
-
    c_host_cublas = (float*)malloc(MATRIX_M * MATRIX_N * sizeof(float));
 
    printf(" Step3. Data init with cuRAND ...\n");
@@ -101,11 +97,10 @@ int main(int argc, char* argv[]) {
    curandGenerateUniform(gen, c, MATRIX_M * MATRIX_N);
    cudaMemcpy(c_cublas, c, MATRIX_M * MATRIX_N * sizeof(float), cudaMemcpyDeviceToDevice);
    
-   printf(" Stsep4. convert FP32 to FP16 for FP16 benchmark...\n");
+   printf(" Step4. convert FP32 to FP16 for FP16 benchmark...\n");
    // curand doesn't currently support fp16 so we generate in fp32 and convert to fp16.
    convertFp32ToFp16 <<< (MATRIX_M * MATRIX_K + 255) / 256, 256 >>> (a_fp16, a_fp32, MATRIX_M * MATRIX_K);
    convertFp32ToFp16 <<< (MATRIX_K * MATRIX_N + 255) / 256, 256 >>> (b_fp16, b_fp32, MATRIX_K * MATRIX_N);
-
 
    curandDestroyGenerator(gen);
 
@@ -116,7 +111,6 @@ int main(int argc, char* argv[]) {
    printf("\nM = %d, N = %d, K = %d. alpha = %f, beta = %f\n\n", MATRIX_M, MATRIX_N, MATRIX_K, alpha, beta);
 
    // Now using cuBLAS
-
    printf("warm up...");
    cublasGemmEx(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N, 
                 MATRIX_M, MATRIX_N, MATRIX_K, 
@@ -139,16 +133,13 @@ int main(int argc, char* argv[]) {
                 CUDA_R_32F, CUBLAS_GEMM_DFALT_TENSOR_OP);
    cudaEventRecord(stopcublas);
 
-   // Error checking
    printf(" Step7. Download results...\n");
-
    cudaMemcpy( c_host_cublas, c_cublas, MATRIX_M * MATRIX_N * sizeof(float), cudaMemcpyDeviceToHost);
    float cublasTime;
    cudaEventSynchronize(stopcublas);
    cudaEventElapsedTime(&cublasTime, startcublas, stopcublas);
 
    printf("cublas took %fms", cublasTime);
-
    printf(" with Operation  %.2f\n", (double) TOTAL_OP );
 
    printf(" RPeak FP16 TFLOPS: %.2f with max clock  %d Mhz \n",      (double) FP16_OP /(1000000) , num_clock ); 
@@ -164,7 +155,6 @@ int main(int argc, char* argv[]) {
 
    cudaFree(c);
    cudaFree(c_cublas);
-
    
    free(c_host_cublas);
 
@@ -178,4 +168,3 @@ __global__ void convertFp32ToFp16 (half *out, float *in, int n) {
       out[idx] = in[idx];
    }
 }
-
