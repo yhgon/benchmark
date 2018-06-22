@@ -1,5 +1,5 @@
 # introduction 
-this code use cuBLAS API in CUDA 9.2 with 396.32
+this code use cuBLAS API in CUDA 9.2 with 396.26
 Half Precision Benchmark use cublasHgemm API in cuBLAS
 
 ```
