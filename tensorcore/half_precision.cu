@@ -34,13 +34,11 @@
 #include <curand.h>
 #include <cublas_v2.h>
 
-
 // Must be multiples of 16 to fit TensorCore
 #define SIZE 8192  //  4096 8192 10240 16384 24576
 #define MATRIX_M SIZE 
 #define MATRIX_N SIZE
 #define MATRIX_K SIZE
-
 
 #define num_clock 1530
 #define num_SM 80
@@ -109,12 +107,11 @@ int main(int argc, char* argv[]) {
    curandGenerateUniform(gen, c_fp32, MATRIX_M * MATRIX_N);
    cudaMemcpy(c_cublas_fp32, c_fp32, MATRIX_M * MATRIX_N * sizeof(float), cudaMemcpyDeviceToDevice);
    
-   printf(" Stsep4. convert FP32 to FP16 for FP16 benchmark...\n");
+   printf(" Step4. convert FP32 to FP16 for FP16 benchmark...\n");
    // curand doesn't currently support fp16 so we generate in fp32 and convert to fp16.
    convertFp32ToFp16 <<< (MATRIX_M * MATRIX_K + 255) / 256, 256 >>> (a_fp16, a_fp32, MATRIX_M * MATRIX_K);
    convertFp32ToFp16 <<< (MATRIX_K * MATRIX_N + 255) / 256, 256 >>> (b_fp16, b_fp32, MATRIX_K * MATRIX_N);
    convertFp32ToFp16 <<< (MATRIX_M * MATRIX_N + 255) / 256, 256 >>> (c_fp16, c_fp32, MATRIX_M * MATRIX_N);
-
 
    curandDestroyGenerator(gen);
 
@@ -125,7 +122,6 @@ int main(int argc, char* argv[]) {
    printf("\nM = %d, N = %d, K = %d. alpha = %f, beta = %f\n\n", MATRIX_M, MATRIX_N, MATRIX_K, alpha, beta);
 
    // Now using cuBLAS
-
    printf("warm up...");
    cublasHgemm(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N, 
                 MATRIX_M, MATRIX_N, MATRIX_K, 
@@ -145,8 +141,7 @@ int main(int argc, char* argv[]) {
                 &beta, 
                 c_cublas_fp16, MATRIX_M);
    cudaEventRecord(stopcublas);
-
-   // Error checking
+ 
    printf(" Step7. Download results...\n");
    convertFp16ToFp32 <<< (MATRIX_M * MATRIX_N + 255) / 256, 256 >>> (c_cublas_fp32, c_cublas_fp16, MATRIX_M * MATRIX_N);
 
@@ -174,7 +169,6 @@ int main(int argc, char* argv[]) {
 
    cudaFree(c_cublas_fp32);
    cudaFree(c_cublas_fp16);
-
    
    free(c_host_cublas_fp32);
 
@@ -195,5 +189,3 @@ __global__ void convertFp16ToFp32 (float *out, half *in, int n) {
       out[idx] = in[idx];
    }
 }
-
-
