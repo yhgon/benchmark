@@ -25,7 +25,7 @@
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-// build with command  nvcc -lcublas -lcudart -lcurand -arch=sm_70 mixed_precision.cu
+// build with command  nvcc -lcublas -lcudart -lcurand -arch=sm_70 gemm.cu
 // use max clock 
 
 #include <stdio.h>
