@@ -42,13 +42,17 @@ module load cuda/9.2.88.1
  
 nvcc -lcublas -lcurand -lcudart -arch=sm_70 mixed_precision.cu -o mixed-8k
  
-nvcc -lcublas -lcurand -lcudart -arch=sm_70 half_precision.cu -o half-8k
+ncc -lcublas -lcurand -lcudart -arch=sm_70 half_precision.cu -o half-8k
+ 
+  nvcc -lcublas -lcurand -lcudart -arch=sm_70 gemm.cu -o gemm-8k
  
 nvidia-smi -ac 877,1530
  
 ./mixed-8k | grep RMax
- 
-./half-8k | grep RMax
+ ./half-8k | grep RMax
+
+./gemm-8k | grep SGEMM
+./gemm-8k | grep DGEMM
 ```
 
 
