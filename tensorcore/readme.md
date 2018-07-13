@@ -1,5 +1,5 @@
 # introduction 
-this code use cuBLAS API in CUDA 9.2 with 396.26
+this code use cuBLAS API in CUDA 9.2 with 396.26  ( with CUDA 9.0 only two benchmark is available) 
 Half Precision Benchmark use cublasHgemm API in cuBLAS
 
 ```
@@ -28,9 +28,9 @@ cublasGemmEx(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N,
 before compile the source code, modify  matrix size manually `#define SIZE 8192  //  4096 8192 10240 16384 24576 `  in line#40 [half_precision](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed_precision.cu#L40)
 
 
-in line#99  benchmark code use curand API to generate random matrix [L99](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed_precision.cu#L99)
+in line#99  benchmark code use curand API to generate random matrix [L99](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed.cu#L99)
 
-in line#121  benchmark code warm up the GPU [L121](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed_precision.cu#L121)
+in line#121  benchmark code warm up the GPU [L121](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed.cu#L121)
 
 moreover, for best performance, use CUDA 9.2 and recent cublas patch. from [nvidia dev site](http://developer.nvidia.com) You also could use docker images from [docker hub](https://hub.docker.com/r/nvidia/cuda/tags/) 
 
@@ -40,9 +40,9 @@ below script show how to compile and run the benchmark.
 ```
 module load cuda/9.2.88.1
  
-nvcc -lcublas -lcurand -lcudart -arch=sm_70 mixed_precision.cu -o mixed-8k
+nvcc -lcublas -lcurand -lcudart -arch=sm_70 mixed.cu -o mixed-8k
  
-ncc -lcublas -lcurand -lcudart -arch=sm_70 half_precision.cu -o half-8k
+nvcc -lcublas -lcurand -lcudart -arch=sm_70 half.cu -o half-8k
  
   nvcc -lcublas -lcurand -lcudart -arch=sm_70 gemm.cu -o gemm-8k
  
