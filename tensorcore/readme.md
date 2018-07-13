@@ -25,7 +25,7 @@ cublasGemmEx(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N,
              CUDA_R_32F, CUBLAS_GEMM_DFALT_TENSOR_OP);
 ```
 
-before compile the source code, modify  matrix size manually `#define SIZE 8192  //  4096 8192 10240 16384 24576 `  in line#40 [half_precision](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed_precision.cu#L40)
+before compile the source code, modify  matrix size manually `#define SIZE 8192  //  4096 8192 10240 16384 24576 `  in line#40 [half_precision](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed.cu#L40)
 
 
 in line#99  benchmark code use curand API to generate random matrix [L99](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed.cu#L99)
@@ -34,7 +34,8 @@ in line#121  benchmark code warm up the GPU [L121](https://github.com/yhgon/benc
 
 moreover, for best performance, use CUDA 9.2 and recent cublas patch. from [nvidia dev site](http://developer.nvidia.com) You also could use docker images from [docker hub](https://hub.docker.com/r/nvidia/cuda/tags/) 
 
-this code don't include comparing the result. 
+this code don't include comparing the result from CPU to save benchmark time.  For double precision and single precision, single code do benchmark. Moreover, the theoratical number is base on Volta SMX2 16GB with boost clock
+
 
 below script show how to compile and run the benchmark. 
 ```
