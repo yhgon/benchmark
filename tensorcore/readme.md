@@ -2,6 +2,7 @@
 this code use cuBLAS API in CUDA 9.2 with 396.26  ( with CUDA 9.0 only two benchmark is available) 
 Half Precision Benchmark use cublasHgemm API in cuBLAS
 
+## FP16
 ```
 cublasHgemm(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N,
              MATRIX_M, MATRIX_N, MATRIX_K,
@@ -34,28 +35,33 @@ in line#121  benchmark code warm up the GPU [L121](https://github.com/yhgon/benc
 
 moreover, for best performance, use CUDA 9.2 and recent cublas patch. from [nvidia dev site](http://developer.nvidia.com) You also could use docker images from [docker hub](https://hub.docker.com/r/nvidia/cuda/tags/) 
 
-this code don't include comparing the result from CPU to save benchmark time.  For double precision and single precision, single code do benchmark. Moreover, the theoratical number is base on Volta SMX2 16GB with boost clock
+this code don't include comparing the result from CPU to save benchmark time.  
 
 
-below script show how to compile and run the benchmark. 
+below script show how to compile and run the benchmark.  Moreover, the theoratical number is base on Volta SMX2 16GB with boost clock 
+
 ```
 module load cuda/9.2.88.1
- 
 nvcc -lcublas -lcurand -lcudart -arch=sm_70 mixed.cu -o mixed-8k
- 
 nvcc -lcublas -lcurand -lcudart -arch=sm_70 half.cu -o half-8k
  
-  nvcc -lcublas -lcurand -lcudart -arch=sm_70 gemm.cu -o gemm-8k
- 
 nvidia-smi -ac 877,1530
- 
 ./mixed-8k | grep RMax
  ./half-8k | grep RMax
+```
 
+##  FP32, FP64
+For double precision and single precision, single code do benchmark. 
+
+```
+module load cuda/9.2.88.1
+nvcc -lcublas -lcurand -lcudart -arch=sm_70 gemm.cu -o gemm-8k
+nvidia-smi -ac 877,1530
 ./gemm-8k | grep SGEMM
 ./gemm-8k | grep DGEMM
 ```
 
+## Malloc test 
 for malloc test, 
 complie with `nvcc ./malloc_test.cu -o malloc_test` and launch with starting memory size(MB) and increment size(MB) with command `./malloc_test 1024 4 ` which means starting 1024MB increasing 4 MB for each iteration. 
 
