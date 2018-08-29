@@ -24,7 +24,7 @@
  * (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-/
+/*
 compile : nvcc malloc_test.cu -o malloc_test
 exec : ./malloc_test 512 1
 starting 512MB , increase 1MB 
@@ -63,7 +63,7 @@ GB	MB
 30	30720
 31	31744
 32	32768
-**/
+*/
 
 #include <stdlib.h>
 #include <stdio.h>
