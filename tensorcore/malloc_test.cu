@@ -28,6 +28,8 @@
 compile : nvcc malloc_test.cu -o malloc_test
 exec : ./malloc_test 512 1
 starting 512MB , increase 1MB 
+if you have multiple GPU, use below
+export CUDA_VISIBLE_DEVICES=3;./malloc_test 512 1
 
 MB convert table would be : 
 GB	MB
