@@ -56,4 +56,42 @@ nvidia-smi -ac 877,1530
 ./gemm-8k | grep DGEMM
 ```
 
+for malloc test, 
+complie with `nvcc ./malloc_test.cu -o malloc_test` and launch with starting memory size(MB) and increment size(MB) with command `./malloc_test 1024 4 ` which means starting 1024MB increasing 4 MB for each iteration. 
+
+```
+below is example of usage 
+/*
+$ export CUDA_VISIBLE_DEVICES=2;./malloc_test 
+ plz use below command 
+ ./malloc_test 1024 10  
+ to  malloc 1024MB and increment would be 10MB 
+
+11GB 11264MB
+15GB 15360MB 
+23GB 23552MB
+31GB 31744MB
+
+current free memory is 15721.0
+
+~$ export CUDA_VISIBLE_DEVICES=2;./malloc_test 15710 1
+------------------------------------------------------------------
+	Total(MB)=	Free(MB)+	init(MB)+	Alloc(MB)
+0	16149.9    =	15721.0+    	428.9     	 <------  initial used memory 
+------------------------------------------------------------------
+0	16149.9    =	13.0+    	428.9+    	15708.0 
+1	16149.9    =	11.0+    	428.9+    	15709.0 
+2	16149.9    =	11.0+    	428.9+    	15710.0 
+3	16149.9    =	9.0+    	428.9+    	15711.0 
+4	16149.9    =	9.0+    	428.9+    	15712.0 
+5	16149.9    =	7.0+    	428.9+    	15713.0 
+6	16149.9    =	7.0+    	428.9+    	15714.0 
+7	16149.9    =	5.0+    	428.9+    	15715.0 
+8	16149.9    =	5.0+    	428.9+    	15716.0 
+9	16149.9    =	3.0+    	428.9+    	15717.0 
+10	16149.9    =	3.0+    	428.9+    	15718.0 
+11	16149.9    =	15721.0+    	428.9+    	15719.0 
+couldn't allocate 15719.0 MB Err : out of memory
+
+```
 
