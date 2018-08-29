@@ -56,6 +56,7 @@ For double precision and single precision, single code do benchmark.
 ```
 module load cuda/9.2.88.1
 nvcc -lcublas -lcurand -lcudart -arch=sm_70 gemm.cu -o gemm-8k
+
 nvidia-smi -ac 877,1530
 ./gemm-8k | grep SGEMM
 ./gemm-8k | grep DGEMM
