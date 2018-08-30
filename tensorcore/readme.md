@@ -50,7 +50,7 @@ nvidia-smi -ac 877,1530
  ./half-8k | grep RMax
 ```
 
-##  FP32, FP64
+##  GEMM
 For double precision and single precision, single code do benchmark. 
 
 ```
@@ -60,6 +60,42 @@ nvcc -lcublas -lcurand -lcudart -arch=sm_70 gemm.cu -o gemm-8k
 nvidia-smi -ac 877,1530
 ./gemm-8k | grep SGEMM
 ./gemm-8k | grep DGEMM
+```
+
+##  FP32 
+For single precision benchmark,  you need to configure matrix size M,N,K for simplicity, use 8192
+
+```
+nvcc -lcublas -lcurand -lcudart -arch=sm_70 sgemm.cu -o sgemm
+
+nvidia-smi -ac 877,1530
+
+./sgemm 8192 8192 8192 | grep SGEMM
+
+SGEMM cublas took 79.954941ms  with   1099511627776.000000 OP clock 1530 Mhz 
+FP32 RPeak: 15.67 TFLOPS SGEMM : 13.75 TFLOPS
+
+./sgemm 8192 8192 8192
+FP32 Matrix Memory Size A 8192x8192 : 256.0 MB   
+FP32 Matrix Memory Size B 8192x8192 : 256.0 MB   
+FP32 Matrix Memory Size C 8192x8192 : 256.0 MB   
+ Step1. Initialize GPU API handles...
+ Step2. Memory Mallocation ...
+ Step3. Data init with cuRAND ...
+ Step5. Ready to Run...
+
+M = 8192, N = 8192, K = 8192. alpha = 2.000000, beta = 2.000000
+
+ Step6. warm up...
+ Step7.  Running with cuBLAS... sgemm
+
+
+SGEMM cublas took 80.276482ms  with   1099511627776.000000 OP clock 1530 Mhz 
+FP32 RPeak: 15.67 TFLOPS SGEMM : 13.70 TFLOPS
+Ratio of Real/Theoretic 0.87 
+
+
+
 ```
 
 ## Malloc test 
