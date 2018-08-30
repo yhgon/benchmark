@@ -4,29 +4,8 @@ Half Precision Benchmark use cublasHgemm API in cuBLAS
 
 the application clock ih the source code was fixed in the max application clock for tesla V100. plz modify if you want to test Tesla P100 or other GPUs.
 
-## FP16
-```
-cublasHgemm(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N,
-             MATRIX_M, MATRIX_N, MATRIX_K,
-             &alpha,
-             a_fp16, MATRIX_M,
-             b_fp16,  MATRIX_K,
-             &beta,
-             c_cublas_fp16, MATRIX_M);
-```
+## TensorCore
 
-Mixed Precision Benchmark use cublasDgemmEx  API in cuBLAS
-
-```
-cublasGemmEx(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N,
-             MATRIX_M, MATRIX_N, MATRIX_K,
-             &alpha,
-             a_fp16, CUDA_R_16F, MATRIX_M,
-             b_fp16, CUDA_R_16F, MATRIX_K,
-             &beta,
-             c_cublas, CUDA_R_32F, MATRIX_M,
-             CUDA_R_32F, CUBLAS_GEMM_DFALT_TENSOR_OP);
-```
 
 before compile the source code, modify  matrix size manually `#define SIZE 8192  //  4096 8192 10240 16384 24576 `  in line#40 [half_precision](https://github.com/yhgon/benchmark/blob/master/tensorcore/mixed.cu#L40)
 
@@ -42,15 +21,51 @@ this code don't include comparing the result from CPU to save benchmark time.
 
 below script show how to compile and run the benchmark.  Moreover, the theoratical number is base on Volta SMX2 16GB with boost clock 
 
+ 
+### FP16
+```
+cublasHgemm(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N,
+             MATRIX_M, MATRIX_N, MATRIX_K,
+             &alpha,
+             a_fp16, MATRIX_M,
+             b_fp16,  MATRIX_K,
+             &beta,
+             c_cublas_fp16, MATRIX_M);
+```
+
+
 ```
 module load cuda/9.2.88.1
-nvcc -lcublas -lcurand -lcudart -arch=sm_70 mixed.cu -o mixed-8k
 nvcc -lcublas -lcurand -lcudart -arch=sm_70 half.cu -o half-8k
  
 nvidia-smi -ac 877,1530
-./mixed-8k | grep RMax
- ./half-8k | grep RMax
+./half-8k | grep RMax
 ```
+
+
+### Mixed Precision
+with cublasDgemmEx  API in cuBLAS, we could test Mixed Precision ( input/output (C) FP32, Computation (A)X(B) FP16
+
+```
+cublasGemmEx(cublasHandle, CUBLAS_OP_N, CUBLAS_OP_N,
+             MATRIX_M, MATRIX_N, MATRIX_K,
+             &alpha,
+             a_fp16, CUDA_R_16F, MATRIX_M,
+             b_fp16, CUDA_R_16F, MATRIX_K,
+             &beta,
+             c_cublas, CUDA_R_32F, MATRIX_M,
+             CUDA_R_32F, CUBLAS_GEMM_DFALT_TENSOR_OP);
+```
+
+```
+module load cuda/9.2.88.1
+nvcc -lcublas -lcurand -lcudart -arch=sm_70 mixed.cu -o mixed-8k
+nvidia-smi -ac 877,1530
+./mixed-8k | grep RMax
+
+```
+
+
 
 ##  GEMM
 For double precision and single precision, single code do benchmark. 
@@ -64,7 +79,7 @@ nvidia-smi -ac 877,1530
 ./gemm-8k | grep DGEMM
 ```
 
-##  FP32 
+###  FP32 
 For single precision benchmark,  you need to configure matrix size M,N,K for simplicity, use 8192
 
 ```
@@ -96,8 +111,42 @@ SGEMM cublas took 80.276482ms  with   1099511627776.000000 OP clock 1530 Mhz
 FP32 RPeak: 15.67 TFLOPS SGEMM : 13.70 TFLOPS
 Ratio of Real/Theoretic 0.87 
 
+```
+
+### FP64
+
+```
+nvcc -lcublas -lcurand -lcudart -arch=sm_70 dgemm.cu -o dgemm
+
+nvidia-smi -ac 877,1530
+
+./dgemm | grep DGEMM
+DGEMM cublas took 159.515656ms  with   1099511627776.000000 OP clock 1530 Mhz 
+FP64 RPeak: 7.83 TFLOPS DGEMM : 6.89 TFLOPS
 
 
+./dgemm 
+ plz use matrix size M, N K with command  ./sgemm  8192 8192 8192  
+ will run default value M=N=K=8192
+
+
+FP64 Matrix Memory Size A 8192x8192 : 512.0 MB   
+FP64 Matrix Memory Size B 8192x8192 : 512.0 MB   
+FP64 Matrix Memory Size C 8192x8192 : 512.0 MB   
+ Step1. Initialize GPU API handles...
+ Step2. Memory Mallocation ...
+ Step3. Data init with cuRAND ...
+ Step5. Ready to Run...
+
+M = 8192, N = 8192, K = 8192. alpha = 2.000000, beta = 2.000000
+
+ Step6. warm up...
+ Step7.  Running with cuBLAS... sgemm
+
+
+DGEMM cublas took 159.271942ms  with   1099511627776.000000 OP clock 1530 Mhz 
+FP64 RPeak: 7.83 TFLOPS DGEMM : 6.90 TFLOPS
+Ratio of Real/Theoretic 0.88   
 ```
 
 ## Malloc test 
