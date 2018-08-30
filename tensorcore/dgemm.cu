@@ -1,5 +1,6 @@
-// build with command  nvcc -lcublas -lcudart -lcurand -arch=sm_70 gemm.cu
-// use max clock 
+// build with command  nvcc -lcublas -lcudart -lcurand -arch=sm_70 dgemm.cu -o dgemm
+// use max application clock  with nvidia-smi -ac 877,1530 for Tesla V100
+
 
 #include <stdio.h>
 #include <stdlib.h>
