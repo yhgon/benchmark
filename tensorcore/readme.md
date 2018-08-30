@@ -1,5 +1,5 @@
 # introduction 
-this code use cuBLAS API in CUDA 9.2 with 396.26  ( with CUDA 9.0 only two benchmark is available) 
+this code use cuBLAS API in CUDA 9.2 with 396.26  ( for FP32, FP64, older version is OK) 
 Half Precision Benchmark use cublasHgemm API in cuBLAS
 
 the application clock ih the source code was fixed in the max application clock for tesla V100. plz modify if you want to test Tesla P100 or other GPUs.
